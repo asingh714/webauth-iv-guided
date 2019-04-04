@@ -1,32 +1,40 @@
-import React, { Component } from "react";
-import { Route, NavLink } from "react-router-dom";
-import "./App.css";
+import React, { Component } from 'react';
+import { Route, NavLink, withRouter } from 'react-router-dom';
 
-import Home from "./Home/Home";
-import Login from "./Login/Login";
-import Users from "./Users/Users";
+import './App.css';
+import Login from './Login/Login';
+import Users from './Users/Users';
 
 class App extends Component {
   render() {
     return (
       <>
         <header>
-          <NavLink exact to="/">
-            Home
-          </NavLink>
+          <NavLink to="/">Home</NavLink>
+          &nbsp;|&nbsp;
+          <NavLink to="/login">Login</NavLink>
           &nbsp;|&nbsp;
           <NavLink to="/users">Users</NavLink>
           &nbsp;|&nbsp;
-          <NavLink to="/login">Login</NavLink>
+          <button onClick={this.logout}>Logout</button>
         </header>
         <main>
-          <Route exact path="/" component={Home} />
-          <Route path="/users" component={Users} />
+          <Route path="/" exact component={Home} />
           <Route path="/login" component={Login} />
+          <Route path="/users" component={Users} />
         </main>
       </>
     );
   }
+
+  logout = () => {
+    localStorage.removeItem('token');
+    this.props.history.push("/login")
+  };
 }
 
-export default App;
+function Home(props) {
+  return <h1>Home Component</h1>;
+}
+
+export default withRouter(App);

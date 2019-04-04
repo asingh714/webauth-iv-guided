@@ -1,41 +1,37 @@
-import React, { Component } from "react";
-import axios from "axios";
+import React from 'react';
+import axios from 'axios';
 
-class Users extends Component {
+import requiresAuth from '../auth/requiresAuth';
+
+class Users extends React.Component {
   state = {
-    users: []
+    users: [],
   };
 
-  componentDidMount() {
-    const endpoint = "http://localhost:5000/api/users";
-    const token = localStorage.getItem("token");
-    const requestOptions = {
-      headers: {
-        authorization: token
-      }
-    };
-
-    axios
-      .get(endpoint, requestOptions)
-      .then(response =>
-        this.setState({
-          users: response.data.users
-        })
-      )
-      .catch(err => console.log(err));
-  }
-
   render() {
-    if (!this.state.users) return <h3>loading...</h3>
     return (
       <>
-        <h2>List of Users:</h2>
-        {this.state.users.map(user => (
-          <li key={user.id}>{user.username}</li>
-        ))}
+        <h2>List of Users</h2>
+        <ul>
+          {this.state.users.map(u => (
+            <li key={u.id}>{u.username}</li>
+          ))}
+        </ul>
       </>
     );
   }
+
+  componentDidMount() {
+    const endpoint = `/users`;
+    axios
+      .get(endpoint)
+      .then(res => {
+        this.setState({ users: res.data });
+      })
+      .catch(error => {
+        console.error('USERS ERROR', error);
+      });
+  }
 }
 
-export default Users;
+export default requiresAuth(Users);
